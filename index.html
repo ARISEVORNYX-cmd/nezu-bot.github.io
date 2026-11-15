@@ -1,218 +1,39 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nezu Bot | Discord Bot</title>
-<meta name="description" content="Nezu Bot — a feature-rich Discord bot. Add Nezu to your server with Administrator permissions.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#100a0b">
+<meta name="description" content="Nezuko Helper — community tools, AI, moderation and fun for your Discord server.">
+<title>Nezuko Helper — Your Discord, powered up</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --bg: #0f0f12;
-    --card: #1a1a22;
-    --accent: #ff4d6d;
-    --accent-hover: #e03e59;
-    --text: #f5f5f5;
-    --muted: #a5a5b2;
-    --border: #2a2a35;
-  }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
-  header {
-    position: sticky;
-    top: 0;
-    background: rgba(15, 15, 18, 0.8);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
-    z-index: 50;
-  }
-  nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .logo { font-weight: 700; font-size: 1.35rem; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-  .logo mark { background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; }
-  .nav-links { display: none; gap: 26px; }
-  .nav-links a { color: var(--text); font-weight: 600; font-size: 0.95rem; text-decoration: none; }
-  .nav-links a:hover { color: var(--accent); text-decoration: none; }
-  .btn-invite {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.2s, transform 0.1s;
-  }
-  .btn-invite:hover { background: var(--accent-hover); text-decoration: none; }
-  .btn-invite:active { transform: scale(0.98); }
-  .menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
-  .hero { padding: 96px 20px 64px; text-align: center; }
-  .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
-  .hero h1 mark { background: var(--accent); color: #fff; padding: 0 6px; border-radius: 6px; }
-  .hero p { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); max-width: 640px; margin: 0 auto 32px; line-height: 1.7; }
-  .hero-actions { display: flex; gap: 14px; justify-content: center; align-items: center; flex-wrap: wrap; }
-  .btn-secondary {
-    background: transparent;
-    color: var(--text);
-    border: 1px solid var(--border);
-    padding: 10px 22px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: border 0.2s, background 0.2s;
-  }
-  .btn-secondary:hover { border-color: var(--accent); background: rgba(255, 77, 109, 0.1); text-decoration: none; }
-  .perm-note { margin-top: 16px; font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
-  .perm-note::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
-  section { padding: 70px 20px; }
-  .section-head { text-align: center; margin-bottom: 48px; }
-  .section-head h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
-  .section-head p { color: var(--muted); font-size: 1.05rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 26px;
-    transition: transform 0.2s, border-color 0.2s;
-  }
-  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
-  .card h3 { font-size: 1.15rem; margin-bottom: 10px; }
-  .card p { color: var(--muted); font-size: 0.95rem; }
-  .commands { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 32px; }
-  .cmd-table { width: 100%; border-collapse: collapse; }
-  .cmd-table th { text-align: left; color: var(--muted); font-size: 0.85rem; padding-bottom: 12px; }
-  .cmd-table td { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-  .cmd-table tr:last-child td { border-bottom: none; }
-  .cmd-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); background: rgba(255,77,109,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
-  footer { border-top: 1px solid var(--border); padding: 40px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
-  @media (max-width: 700px) {
-    .nav-links { position: absolute; top: 64px; right: 0; background: var(--bg); border-left: 1px solid var(--border); border-bottom: 1px solid var(--border); border-bottom-left-radius: 12px; flex-direction: column; padding: 16px 24px; gap: 14px; width: 200px; }
-    .nav-links.open { display: flex; }
-    .menu-btn { display: block; }
-    .hero-actions { flex-direction: column; width: 100%; align-items: stretch; }
-    .hero-actions .btn-invite, .hero-actions .btn-secondary { width: 100%; justify-content: center; }
-  }
+:root{--bg:#100a0b;--panel:#191011;--panel2:#211416;--ink:#fff8f2;--muted:#c1a9a1;--line:#49251f;--red:#ff3c27;--orange:#ff7a1a;--gold:#ffd43b;--radius:21px;--max:1140px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:radial-gradient(ellipse at 78% 0%,#5b1b0d85,transparent 34rem),radial-gradient(ellipse at 0% 46%,#42200d4a,transparent 30rem),var(--bg);font:16px/1.6 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.12;background-image:linear-gradient(#ff7a1a18 1px,transparent 1px),linear-gradient(90deg,#ffd43b12 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(#000,transparent 80%)}body:after{content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;background:conic-gradient(from 0deg at 50% 50%,transparent 0 25%,#ff4b270b 30%,transparent 37% 62%,#ffd43b09 68%,transparent 76%);filter:blur(26px);animation:ambient 28s linear infinite}a{color:inherit;text-decoration:none}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.07em}.logo{width:40px;height:40px;border-radius:14px;background:linear-gradient(140deg,var(--gold),var(--orange),var(--red));display:grid;place-items:center;color:#21100b;font-size:22px;box-shadow:0 0 25px #ff592c6b}.links{display:flex;align-items:center;gap:25px;color:var(--muted);font-size:14px}.links a:hover{color:#fff}.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid transparent;border-radius:13px;padding:12px 18px;background:linear-gradient(105deg,var(--gold),var(--orange) 54%,var(--red));color:#1b0c08;font-weight:900;box-shadow:0 0 25px #ff4b2750;transition:transform .2s,filter .2s}.btn:hover{transform:translateY(-2px);filter:brightness(1.08)}.btn.alt{background:#171011;border-color:#ff8a435e;color:#ffe8db;box-shadow:none}.hero{padding:76px 0 46px;display:grid;grid-template-columns:1.1fr .9fr;gap:34px;align-items:center}.eyebrow,.kicker{font-size:12px;text-transform:uppercase;letter-spacing:.16em;font-weight:850;color:var(--gold)}.eyebrow{display:flex;gap:10px;align-items:center}.eyebrow:before{content:"";width:26px;height:2px;background:var(--orange)}h1{font-size:clamp(46px,7vw,76px);line-height:.98;letter-spacing:-.06em;margin:18px 0}.gradient{background:linear-gradient(100deg,#fff2bb,var(--gold),var(--orange),#ff735d);color:transparent;background-clip:text}.lead{max-width:610px;color:var(--muted);font-size:18px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}.warning{display:inline-flex;gap:8px;align-items:flex-start;color:#ffc9a9;background:#ff542015;border:1px solid #ff70404a;padding:10px 12px;border-radius:12px;font-size:12px;margin-top:17px}.art{min-height:400px;display:grid;place-items:center;position:relative;perspective:1000px;isolation:isolate;transform-style:preserve-3d}.art:before{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:#ff6b2a21;filter:blur(70px);animation:pulse 4s ease-in-out infinite}.art:after{content:"";position:absolute;width:120px;height:120px;right:9%;top:18%;border-radius:50%;border:1px solid #ffd43b44;box-shadow:0 0 55px #ff9c2d33;transform:translateZ(-70px);animation:planet 13s linear infinite}.halo{position:absolute;width:min(340px,75vw);aspect-ratio:1;border:1px solid #ff8b4f52;border-radius:50%;background:radial-gradient(circle at 36% 25%,#ffb42440,transparent 38%),radial-gradient(circle at 66% 70%,#ff332b42,transparent 44%);box-shadow:inset 0 0 60px #ff571c24,0 0 75px #ff4b2834;animation:float 6s ease-in-out infinite;transform-style:preserve-3d}.ring{position:absolute;inset:-4%;border:2px solid #ffd43ba6;border-radius:50%;height:35%;top:33%;box-shadow:0 0 20px #ff8a2d8c,inset 0 0 12px #ff3c2755;transform:rotateX(68deg) rotateZ(-18deg);animation:ring 10s linear infinite}.ring.two{inset:-2%;height:55%;top:22%;border-color:#ff655e99;transform:rotateY(62deg) rotateX(18deg);animation:ring2 12s linear infinite}.cube{position:absolute;left:50%;top:50%;width:142px;height:142px;margin:-71px;transform-style:preserve-3d;animation:cube 14s linear infinite;filter:drop-shadow(0 14px 24px #ff3c2766)}.face{position:absolute;inset:0;display:grid;place-items:center;border:1px solid #fff9;border-radius:23px;background:linear-gradient(145deg,#ff9a54e8,#f33128dd 58%,#b91a36e8);box-shadow:inset 0 0 33px #ffe3a566,0 0 27px #ff4b2a77;color:#fff5dd;font-size:40px;backdrop-filter:blur(6px)}.front{transform:translateZ(71px)}.back{transform:rotateY(180deg) translateZ(71px)}.right{transform:rotateY(90deg) translateZ(71px)}.left{transform:rotateY(-90deg) translateZ(71px)}.top{transform:rotateX(90deg) translateZ(71px)}.bottom{transform:rotateX(-90deg) translateZ(71px)}.floatcard{position:absolute;padding:12px 15px;border:1px solid #ff855755;border-radius:15px;background:#191011eb;box-shadow:0 12px 38px #0009;font-size:13px}.floatcard b{display:block}.floatcard small{color:var(--muted)}.fc1{right:0;top:38px}.fc2{left:0;bottom:38px}.spark{position:absolute;z-index:3;color:var(--gold);font-size:20px;text-shadow:0 0 18px #ffd43b;animation:sparkle 2.7s ease-in-out infinite}.sp1{top:18%;left:15%}.sp2{right:16%;bottom:18%;animation-delay:.7s}.sp3{right:11%;top:48%;font-size:13px;animation-delay:1.3s}.quick-stats{display:flex;gap:24px;margin-top:25px;justify-content:flex-start}.quick-stats div{border-left:2px solid #ff7a1a;padding-left:10px}.quick-stats b{font-size:19px;color:#fff3df;display:block;line-height:1.15}.quick-stats small{font-size:11px;color:var(--muted)}.marquee{overflow:hidden;border-block:1px solid #ff8a431f;background:#ffffff04;padding:12px 0;margin:3px 0 20px}.marquee-track{display:flex;width:max-content;gap:36px;animation:marquee 28s linear infinite;color:#ffcf9e;text-transform:uppercase;font-size:11px;font-weight:850;letter-spacing:.18em}.marquee-track span{display:flex;align-items:center;gap:20px}.marquee-track i{font-style:normal;color:var(--gold)}.dot{display:inline-block;width:8px;height:8px;background:#ffe34f;border-radius:50%;box-shadow:0 0 12px #ffe34f;margin-right:7px}.section{padding:56px 0}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:24px}.section h2{font-size:clamp(30px,4vw,45px);line-height:1.08;letter-spacing:-.045em;margin:7px 0 0}.sectionhead p{color:var(--muted);max-width:440px;margin:0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{position:relative;overflow:hidden;padding:21px;border:1px solid #48271f;background:linear-gradient(145deg,#241314,#140e10);border-radius:var(--radius);min-height:175px;transform:perspective(850px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateZ(0);transform-style:preserve-3d;transition:transform .24s ease,border-color .2s,box-shadow .2s}.card:before{content:"";position:absolute;inset:-1px;pointer-events:none;background:radial-gradient(circle at var(--px,50%) var(--py,0%),#ffbd5032,transparent 48%);opacity:.65}.card>*{position:relative;transform:translateZ(16px)}.card:hover{transform:translateY(-4px);border-color:#ff784eaa;box-shadow:0 0 28px #ff59251e}.icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#ff7a1a2c,#ff3c2726);font-size:21px;margin-bottom:14px;box-shadow:0 0 16px #ff61221e}.card h3{font-size:16px;line-height:1.3;margin:0 0 7px}.card p{font-size:13px;line-height:1.55;color:var(--muted);margin:0}.cmd-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:17px}.search{flex:1;min-width:210px;background:#130d0e;color:var(--ink);border:1px solid #593028;border-radius:12px;padding:12px 14px;font:inherit}.filter{background:#1a1112;color:#f7ddd0;border:1px solid #4c2921;border-radius:99px;padding:9px 13px;cursor:pointer;font:700 12px inherit}.filter.active{background:linear-gradient(100deg,#ffd43b,#ff7a1a);color:#1b0c08;border-color:transparent}.cmdgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.cmd{background:linear-gradient(145deg,#1e1112,#120d0e);border:1px solid #42251f;border-radius:15px;padding:16px;min-height:126px;transition:transform .2s,border-color .2s,box-shadow .2s;transform:perspective(700px) translateZ(0)}.cmd:hover{border-color:#ff784e99;transform:perspective(700px) translateY(-4px) rotateX(2deg);box-shadow:0 12px 24px #0007,0 0 22px #ff59251b}.cmd code{display:inline-block;color:#ffd43b;font-weight:850;font-size:14px;margin-bottom:7px}.cmd p{font-size:13px;color:var(--muted);margin:0}.empty{color:var(--muted);padding:14px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.step{padding:20px;border:1px solid #48271f;border-radius:17px;background:#ffffff05}.step small{color:var(--gold);font-weight:900;letter-spacing:.14em}.step h3{margin:7px 0;font-size:17px}.step p{margin:0;color:var(--muted);font-size:14px}.faq{display:grid;grid-template-columns:1fr 1fr;gap:11px}.faq details{border:1px solid #48271f;border-radius:15px;background:#ffffff05;padding:16px}.faq summary{font-weight:800;cursor:pointer;list-style:none}.faq summary::-webkit-details-marker{display:none}.faq summary:after{content:"＋";float:right;color:var(--gold)}.faq details[open] summary:after{content:"−"}.faq p{font-size:13px;color:var(--muted);margin:10px 0 0}.cta{padding:56px 24px;margin:36px auto 62px;text-align:center;border:1px solid #ff74474a;border-radius:27px;background:radial-gradient(ellipse at 50% 0%,#78230e77,transparent 67%),#150e10;box-shadow:0 0 55px #ff4a2418}.cta h2{font-size:clamp(32px,5vw,48px);letter-spacing:-.04em;margin:12px 0}.cta p{color:var(--muted);max-width:620px;margin:0 auto 22px}.footer{padding:22px 0 34px;border-top:1px solid #ffffff12;display:flex;justify-content:space-between;gap:12px;color:#a58e86;font-size:13px}.footer strong{color:#fff4e9}.fine{font-size:11px;color:#a58e86;margin-top:14px}.js-ready .reveal{opacity:0;transform:translateY(23px) scale(.99);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}.js-ready .reveal.seen{opacity:1;transform:none}.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{to{transform:translateX(-50%)}}@keyframes ambient{to{transform:rotate(360deg)}}@keyframes pulse{0%,100%{transform:scale(.88);opacity:.55}50%{transform:scale(1.18);opacity:.95}}@keyframes planet{to{transform:translateZ(-70px) rotate(360deg)}}@keyframes sparkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.2) rotate(40deg)}}@keyframes float{0%,100%{transform:rotateX(-8deg) rotateY(12deg) translateY(0)}50%{transform:rotateX(8deg) rotateY(-12deg) translateY(-13px)}}@keyframes cube{from{transform:rotateX(-20deg) rotateY(0) rotateZ(0)}to{transform:rotateX(340deg) rotateY(360deg) rotateZ(360deg)}}@keyframes ring{from{transform:rotateX(68deg) rotateZ(-18deg)}to{transform:rotateX(68deg) rotateZ(342deg)}}@keyframes ring2{from{transform:rotateY(62deg) rotateX(18deg)}to{transform:rotateY(422deg) rotateX(18deg)}}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.wrap{width:calc(100% - 28px)}.nav{height:66px}.links{gap:10px}.links>a:not(.btn){display:none}.links .btn{font-size:12px;padding:10px 12px}.hero{padding:48px 0 25px;grid-template-columns:1fr;gap:0}.quick-stats{justify-content:center}.hero-copy{text-align:center}.eyebrow{justify-content:center}.lead{font-size:16px;margin:auto}.actions{justify-content:center}.warning{max-width:100%;text-align:left}.art{min-height:300px}.halo{width:245px}.cube{scale:.75}.art:after{right:8%;top:13%;width:78px;height:78px}.fc1{right:0;top:13px}.fc2{left:0;bottom:14px}.section{padding:42px 0}.sectionhead{display:block}.sectionhead p{margin-top:10px}.grid{grid-template-columns:1fr 1fr;gap:10px}.card{padding:16px;min-height:0}.cmdgrid{grid-template-columns:1fr}.steps,.faq{grid-template-columns:1fr}.cta{padding:43px 16px;margin:22px auto 45px}.footer{flex-direction:column}}@media(max-width:380px){.grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
-
-<header>
-  <nav class="container">
-    <div class="logo">Nezu<span class="mark">Bot</span></div>
-    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
-    <div class="nav-links" id="navLinks">
-      <a href="#features">Features</a>
-      <a href="#commands">Commands</a>
-      <a href="#invite">Invite</a>
-    </div>
-  </nav>
-</header>
-
-<section class="hero">
-  <div class="container">
-    <h1>Add <mark>Nezu</mark> to your Discord server</h1>
-    <p>A capable, easy-to-use Discord bot built to level up your server. Moderation, fun, utility and more — ready to use in seconds.</p>
-    <div class="hero-actions" id="heroActions">
-      <a id="inviteBtn" class="btn-invite" href="#" target="_blank" rel="noopener">Invite Nezu Bot</a>
-      <a class="btn-secondary" href="#features">Features</a>
-    </div>
-    <p class="perm-note">Requires Administrator permission to set up.</p>
-  </div>
-</section>
-
-<section id="features" class="section">
-  <div class="container">
-    <div class="section-head">
-      <h2>What Nezu can do</h2>
-      <p>Everything you need to keep your Discord server active and safe.</p>
-    </div>
-    <div class="grid">
-      <div class="card">
-        <h3>🛡️ Moderation</h3>
-        <p>Kick, ban, mute, and clear messages with simple commands to keep your community safe.</p>
-      </div>
-      <div class="card">
-        <h3>⚡ Utility</h3>
-        <p>Server info, user info, ping, and helpful tools for server management.</p>
-      </div>
-      <div class="card">
-        <h3>🎉 Fun</h3>
-        <p>Engaging commands to entertain members and liven up your server.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="commands" class="section">
-  <div class="container">
-    <div class="section-head">
-      <h2>Commands</h2>
-      <p>Common Nezu bot commands.</p>
-    </div>
-    <div class="commands">
-      <table class="cmd-table">
-        <thead>
-          <tr><th>Command</th><th>Description</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><span class="cmd-code">/ping</span></td><td>Check the bot's response time.</td></tr>
-          <tr><td><span class="cmd-code">/kick</span></td><td>Remove a member from the server.</td></tr>
-          <tr><td><span class="cmd-code">/ban</span></td><td>Ban a member from the server.</td></tr>
-          <tr><td><span class="cmd-code">/mute</span></td><td>Temporarily mute a member.</td></tr>
-          <tr><td><span class="cmd-code">/clear</span></td><td>Delete multiple messages at once.</td></tr>
-          <tr><td><span class="cmd-code">/serverinfo</span></td><td>View server details and statistics.</td></tr>
-          <tr><td><span class="cmd-code">/userinfo</span></td><td>View a member's profile information.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<section id="invite" class="section" style="text-align:center;">
-  <div class="container">
-    <h2>Invite Nezu Bot</h2>
-    <p>Click below to add Nezu to your Discord server. Administrator permission is required during setup.</p>
-    <a class="btn-invite" style="font-size:1.1rem; padding:14px 28px;" href="#" target="_blank" rel="noopener" id="footerInviteBtn">Invite Nezu Bot</a>
-  </div>
-</section>
-
-<footer class="container">
-  Nezu Bot · Hosted on GitHub Pages · <a href="#" style="color:var(--text); text-decoration:underline;">Support Server</a>
-</footer>
-
+<header class="wrap nav"><a class="brand" href="#top"><span class="logo">✦</span><span>NEZUKO HELPER</span></a><nav class="links"><a href="#features">Features</a><a class="btn" href="https://discord.com/oauth2/authorize?client_id=1561413419901394975&permissions=8&scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Invite bot ↗</a></nav></header>
+<main id="top">
+<section class="wrap hero"><div><div class="eyebrow">One bot · More for your community</div><h1>Your Discord,<br><span class="gradient">powered up.</span></h1><p class="lead">Meet Nezuko Helper: community tools, AI, moderation, games and everyday utilities—all in one friendly Discord bot.</p><div class="actions"><a class="btn" href="https://discord.com/oauth2/authorize?client_id=1561413419901394975&permissions=8&scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add to Discord <span>↗</span></a><a class="btn alt" href="#features">Explore features ↓</a></div><div class="quick-stats"><div><b>AI</b><small>creative tools</small></div><div><b>Safe</b><small>server controls</small></div><div><b>One</b><small>community helper</small></div></div><div class="warning">⚠️ This invite asks for Administrator permission. Only add the bot to a server you own or manage, and review the permission prompt before approving.</div></div><div class="art" aria-label="Animated 3D Nezuko Helper emblem"><span class="spark sp1">✦</span><span class="spark sp2">✧</span><span class="spark sp3">✦</span><div class="halo"><div class="ring"></div><div class="ring two"></div><div class="cube" aria-hidden="true"><i class="face front">✦</i><i class="face back">NE</i><i class="face right">✧</i><i class="face left">N</i><i class="face top">✦</i><i class="face bottom">Z</i></div></div><div class="floatcard fc1"><b><i class="dot"></i>Community tools</b><small>One friendly helper</small></div><div class="floatcard fc2"><b>All-in-one</b><small>One friendly community bot</small></div></div></section>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>AI CHAT <i>✦</i> COMMUNITY <i>✦</i> MODERATION <i>✦</i> MUSIC <i>✦</i> GAMES <i>✦</i> UTILITIES <i>✦</i></span><span>AI CHAT <i>✦</i> COMMUNITY <i>✦</i> MODERATION <i>✦</i> MUSIC <i>✦</i> GAMES <i>✦</i> UTILITIES <i>✦</i></span></div></div>
+<section class="wrap section" id="features"><div class="sectionhead"><div><div class="kicker">All-in-one community companion</div><h2>Useful tools.<br>More fun together.</h2></div><p>Pick the features that fit your server. Feature availability can depend on bot setup, permissions and provider configuration.</p></div><div class="grid">
+<article class="card"><div class="icon">👋</div><h3>Welcome & verification</h3><p>Welcome DMs with a Verify button to help new members get started.</p></article>
+<article class="card"><div class="icon">🤖</div><h3>AI chat</h3><p>Chat with Nezuko Helper using its AI features.</p></article>
+<article class="card"><div class="icon">🎭</div><h3>Auto-role</h3><p>Configure a role for new members with the auto-role setup tool.</p></article>
+<article class="card"><div class="icon">🎉</div><h3>Giveaways</h3><p>Launch a giveaway, collect button entries and announce a winner.</p></article>
+<article class="card"><div class="icon">🛡️</div><h3>Moderation</h3><p>Kick, ban, timeout, warnings, slowmode, cleanup and role tools.</p></article>
+<article class="card"><div class="icon">🎨</div><h3>AI images</h3><p>Create images from text descriptions with its AI image feature.</p></article>
+<article class="card"><div class="icon">👑</div><h3>No-prefix mode</h3><p>Owner-managed no-prefix access for approved members.</p></article>
+<article class="card"><div class="icon">🎮</div><h3>Fun & utilities</h3><p>Games, polls, reminders, tickets, levels, coins, QR tools and more.</p></article>
+</div></section>
+<section class="wrap section" id="getting-started"><div class="sectionhead"><div><div class="kicker">Getting started</div><h2>Join in three steps.</h2></div><p>You’ll need Manage Server permission in the server where you want to add the bot.</p></div><div class="steps"><article class="step"><small>01 — INVITE</small><h3>Open the invite</h3><p>Tap Add to Discord and select a server you own or manage.</p></article><article class="step"><small>02 — REVIEW</small><h3>Review permissions</h3><p>This link requests Administrator. Read Discord’s prompt before confirming.</p></article><article class="step"><small>03 — EXPLORE</small><h3>Explore the features</h3><p>Once the bot is online, try the community, AI and utility tools.</p></article></div></section>
+<section class="wrap section" id="community"><div class="sectionhead"><div><div class="kicker">Community</div><h2>Meet Nezuko HQ.</h2></div><p>Join the community space for help and updates.</p></div><a class="btn alt" href="https://discord.gg/JRJfbg9hBn" target="_blank" rel="noopener noreferrer">Join Nezuko HQ ↗</a></section>
+<section class="wrap section" id="faq"><div class="sectionhead"><div><div class="kicker">Good to know</div><h2>Quick answers.</h2></div><p>Honest notes about permissions and setup.</p></div><div class="faq"><details><summary>Is Nezuko Helper free?</summary><p>The provided bot page describes the bot as free to add and use. Hosting and third-party services can have their own limits or costs.</p></details><details><summary>How do I get started?</summary><p>Invite the bot to a server you manage, review permissions, and explore its enabled features.</p></details><details><summary>Why does the invite request Administrator?</summary><p>The invite URL supplied by the owner requests Administrator access. That is broad access. Only approve it for a server you own or manage and trust the bot in.</p></details><details><summary>Can I change its permissions later?</summary><p>Server admins can edit the bot’s role permissions in Server Settings → Roles. Removing permissions may disable some features.</p></details><details><summary>Is the bot always online?</summary><p>Website availability does not prove the Discord process is online. Check the live bot and hosting console for current status.</p></details><details><summary>How do I report a problem?</summary><p>Use the bot’s report/support tools if available, or ask in Nezuko HQ. Never share tokens, passwords or OTPs.</p></details></div></section>
+<section class="wrap cta"><div class="kicker">Your community, your way</div><h2>Ready to add Nezuko Helper?</h2><p>Invite the bot and review the requested Administrator permission carefully before approving.</p><a class="btn" href="https://discord.com/oauth2/authorize?client_id=1561413419901394975&permissions=8&scope=bot%20applications.commands" target="_blank" rel="noopener noreferrer">Add Nezuko Helper to Discord ↗</a><div class="fine">Administrator permission is powerful. Only add the bot to servers you own or manage.</div></section>
+</main>
+<footer class="wrap footer"><span><strong>NEZUKO HELPER</strong> · Made for Discord communities</span><span>Features depend on the bot build, permissions and services.</span></footer>
 <script>
-  (function () {
-    // TODO: Replace with your actual Discord OAuth2 Client ID
-    var clientId = 'YOUR_CLIENT_ID';
-    var inviteUrl = 'https://discord.com/api/oauth2/authorize?client_id=' + clientId +
-      '&permissions=8&scope=bot%20applications.commands';
-    document.querySelectorAll('#inviteBtn, #footerInviteBtn').forEach(function (btn) {
-      btn.href = inviteUrl;
-    });
-
-    var menuBtn = document.getElementById('menuBtn');
-    var navLinks = document.getElementById('navLinks');
-    menuBtn.addEventListener('click', function () {
-      navLinks.classList.toggle('open');
-    });
-  })();
+(()=>{const cards3d=[...document.querySelectorAll(".card")];if(matchMedia("(pointer:fine)").matches){cards3d.forEach(card=>{card.addEventListener("pointermove",e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;card.style.setProperty("--rx",`${(0.5-y)*8}deg`);card.style.setProperty("--ry",`${(x-0.5)*9}deg`);card.style.setProperty("--px",`${x*100}%`);card.style.setProperty("--py",`${y*100}%`)});card.addEventListener("pointerleave",()=>{card.style.setProperty("--rx","0deg");card.style.setProperty("--ry","0deg")})})}const revealTargets=document.querySelectorAll(".section,.cta,.card");if("IntersectionObserver" in window&&!matchMedia("(prefers-reduced-motion: reduce)").matches){const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add("seen");observer.unobserve(entry.target)}}),{threshold:.12});revealTargets.forEach(el=>{el.classList.add("reveal");observer.observe(el)})}})();
 </script>
-
 </body>
 </html>
