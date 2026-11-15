@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nezu Bot | Discord Bot</title>
+<meta name="description" content="Nezu Bot — a feature-rich Discord bot. Add Nezu to your server with Administrator permissions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #0f0f12;
+    --card: #1a1a22;
+    --accent: #ff4d6d;
+    --accent-hover: #e03e59;
+    --text: #f5f5f5;
+    --muted: #a5a5b2;
+    --border: #2a2a35;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+  header {
+    position: sticky;
+    top: 0;
+    background: rgba(15, 15, 18, 0.8);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 50;
+  }
+  nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-weight: 700; font-size: 1.35rem; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+  .logo mark { background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 4px; }
+  .nav-links { display: none; gap: 26px; }
+  .nav-links a { color: var(--text); font-weight: 600; font-size: 0.95rem; text-decoration: none; }
+  .nav-links a:hover { color: var(--accent); text-decoration: none; }
+  .btn-invite {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-invite:hover { background: var(--accent-hover); text-decoration: none; }
+  .btn-invite:active { transform: scale(0.98); }
+  .menu-btn { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; }
+  .hero { padding: 96px 20px 64px; text-align: center; }
+  .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+  .hero h1 mark { background: var(--accent); color: #fff; padding: 0 6px; border-radius: 6px; }
+  .hero p { color: var(--muted); font-size: clamp(1rem, 2vw, 1.25rem); max-width: 640px; margin: 0 auto 32px; line-height: 1.7; }
+  .hero-actions { display: flex; gap: 14px; justify-content: center; align-items: center; flex-wrap: wrap; }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 10px 22px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border 0.2s, background 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: rgba(255, 77, 109, 0.1); text-decoration: none; }
+  .perm-note { margin-top: 16px; font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+  .perm-note::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: inline-block; }
+  section { padding: 70px 20px; }
+  .section-head { text-align: center; margin-bottom: 48px; }
+  .section-head h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+  .section-head p { color: var(--muted); font-size: 1.05rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 22px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--accent); }
+  .card h3 { font-size: 1.15rem; margin-bottom: 10px; }
+  .card p { color: var(--muted); font-size: 0.95rem; }
+  .commands { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 32px; }
+  .cmd-table { width: 100%; border-collapse: collapse; }
+  .cmd-table th { text-align: left; color: var(--muted); font-size: 0.85rem; padding-bottom: 12px; }
+  .cmd-table td { padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+  .cmd-table tr:last-child td { border-bottom: none; }
+  .cmd-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent); background: rgba(255,77,109,0.1); padding: 2px 8px; border-radius: 4px; font-size: 0.9rem; }
+  footer { border-top: 1px solid var(--border); padding: 40px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+  @media (max-width: 700px) {
+    .nav-links { position: absolute; top: 64px; right: 0; background: var(--bg); border-left: 1px solid var(--border); border-bottom: 1px solid var(--border); border-bottom-left-radius: 12px; flex-direction: column; padding: 16px 24px; gap: 14px; width: 200px; }
+    .nav-links.open { display: flex; }
+    .menu-btn { display: block; }
+    .hero-actions { flex-direction: column; width: 100%; align-items: stretch; }
+    .hero-actions .btn-invite, .hero-actions .btn-secondary { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="container">
+    <div class="logo">Nezu<span class="mark">Bot</span></div>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#commands">Commands</a>
+      <a href="#invite">Invite</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1>Add <mark>Nezu</mark> to your Discord server</h1>
+    <p>A capable, easy-to-use Discord bot built to level up your server. Moderation, fun, utility and more — ready to use in seconds.</p>
+    <div class="hero-actions" id="heroActions">
+      <a id="inviteBtn" class="btn-invite" href="#" target="_blank" rel="noopener">Invite Nezu Bot</a>
+      <a class="btn-secondary" href="#features">Features</a>
+    </div>
+    <p class="perm-note">Requires Administrator permission to set up.</p>
+  </div>
+</section>
+
+<section id="features" class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>What Nezu can do</h2>
+      <p>Everything you need to keep your Discord server active and safe.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <h3>🛡️ Moderation</h3>
+        <p>Kick, ban, mute, and clear messages with simple commands to keep your community safe.</p>
+      </div>
+      <div class="card">
+        <h3>⚡ Utility</h3>
+        <p>Server info, user info, ping, and helpful tools for server management.</p>
+      </div>
+      <div class="card">
+        <h3>🎉 Fun</h3>
+        <p>Engaging commands to entertain members and liven up your server.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="commands" class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Commands</h2>
+      <p>Common Nezu bot commands.</p>
+    </div>
+    <div class="commands">
+      <table class="cmd-table">
+        <thead>
+          <tr><th>Command</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="cmd-code">/ping</span></td><td>Check the bot's response time.</td></tr>
+          <tr><td><span class="cmd-code">/kick</span></td><td>Remove a member from the server.</td></tr>
+          <tr><td><span class="cmd-code">/ban</span></td><td>Ban a member from the server.</td></tr>
+          <tr><td><span class="cmd-code">/mute</span></td><td>Temporarily mute a member.</td></tr>
+          <tr><td><span class="cmd-code">/clear</span></td><td>Delete multiple messages at once.</td></tr>
+          <tr><td><span class="cmd-code">/serverinfo</span></td><td>View server details and statistics.</td></tr>
+          <tr><td><span class="cmd-code">/userinfo</span></td><td>View a member's profile information.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="invite" class="section" style="text-align:center;">
+  <div class="container">
+    <h2>Invite Nezu Bot</h2>
+    <p>Click below to add Nezu to your Discord server. Administrator permission is required during setup.</p>
+    <a class="btn-invite" style="font-size:1.1rem; padding:14px 28px;" href="#" target="_blank" rel="noopener" id="footerInviteBtn">Invite Nezu Bot</a>
+  </div>
+</section>
+
+<footer class="container">
+  Nezu Bot · Hosted on GitHub Pages · <a href="#" style="color:var(--text); text-decoration:underline;">Support Server</a>
+</footer>
+
+<script>
+  (function () {
+    // TODO: Replace with your actual Discord OAuth2 Client ID
+    var clientId = 'YOUR_CLIENT_ID';
+    var inviteUrl = 'https://discord.com/api/oauth2/authorize?client_id=' + clientId +
+      '&permissions=8&scope=bot%20applications.commands';
+    document.querySelectorAll('#inviteBtn, #footerInviteBtn').forEach(function (btn) {
+      btn.href = inviteUrl;
+    });
+
+    var menuBtn = document.getElementById('menuBtn');
+    var navLinks = document.getElementById('navLinks');
+    menuBtn.addEventListener('click', function () {
+      navLinks.classList.toggle('open');
+    });
+  })();
+</script>
+
+</body>
+</html>
